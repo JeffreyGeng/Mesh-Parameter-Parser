@@ -1,3 +1,5 @@
+import sun.plugin.javascript.navig4.Layer;
+
 import java.io.*;
 
 public class UndertrayParse {
@@ -6,10 +8,13 @@ public class UndertrayParse {
     String csvSplitBy = ",";
     String[] data;
     String csvFilename = "undertray_output.csv";
+    LayersCalculator calculator;
+    int layers;
 
-    public UndertrayParse(String fileLocation)
+    public UndertrayParse(String fileLocation, double wantedHeight, double wantedGrowthRate)
     {
         csvFile = fileLocation;
+        calculator = new LayersCalculator(wantedHeight, wantedGrowthRate);
     }
 
     public void undertrayParse() throws IOException
@@ -86,7 +91,10 @@ public class UndertrayParse {
                     continue;
                 }
 
-                //if none of these conditions hit, print
+                //if none of these conditions hit, calculate layers
+                layers = calculator.calculateLayers(row.p7);
+
+                line = row.dp+","+ row.p3+","+ row.p4+","+ row.p5+","+layers+","+ row.p7+","+ row.p8+","+ row.p9+",,,,";
                 csvWriter.write(line);
                 csvWriter.newLine();
             }
@@ -100,9 +108,4 @@ public class UndertrayParse {
         csvWriter.close();
         System.out.println("Undertray file parsed.");
     }
-
-
-
-
-
 }
